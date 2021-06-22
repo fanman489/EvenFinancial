@@ -27,10 +27,21 @@ class Pipeline():
                     cursor.execute(query)
 
 
-    def createTables(self, tables, schema):
+    def createTables(self, tables, schema, data_list):
         engine = sqlalchemy.create_engine('postgresql+psycopg2://postgres:' + self.parameters["password"] + '@localhost/' + self.parameters['user'])
 
-        tables.to_sql(tables, engine, schema=schema, method=utils.psql_insert_copy)
+        if len(tables) != len(schema):
+            print("table and schema do not match")
+            return
+
+        for i in range(len(tables)):
+            self.cur.execute(
+                "SELECT EXISTS (SELECT 1 AS result FROM pg_tables WHERE schemaname = '" + schema[i] + "' AND tablename = '" + tables[i] + "');")
+
+
+            if not self.cur.fetchone():
+
+                data_list[i].to_sql(tables[i], engine, schema=schema[i], method=utils.psql_insert_copy)
 
 
     """select data"""

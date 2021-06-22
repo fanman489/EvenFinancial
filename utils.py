@@ -5,7 +5,7 @@ from io import StringIO
 import csv
 
 def readParquet(directory):
-    data_parquet = pq.read_table('Data\ds_clicks.parquet.gzip')
+    data_parquet = pq.read_table(directory)
 
     data_pd = data_parquet.to_pandas()
 

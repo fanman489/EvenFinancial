@@ -32,6 +32,10 @@ CREATE_CLICKS_SCHEMA = f"CREATE SCHEMA IF NOT EXISTS clicks;"
 CREATE_LEADS_SCHEMA =  f"CREATE SCHEMA IF NOT EXISTS leads;"
 CREATE_OFFERS_SCHEMA =  f"CREATE SCHEMA IF NOT EXISTS offers;"
 schemaQueries = [CREATE_CLICKS_SCHEMA, CREATE_LEADS_SCHEMA, CREATE_OFFERS_SCHEMA]
+tables = ['clicks', 'leads', 'schema']
+schema = ['clicks', 'leads', 'schema']
+data_list = [clicks, leads, offers]
+target_variable = 'clicked_at'
 
 
 
@@ -47,7 +51,7 @@ ORDER BY leads.lead_uuid"
 cat_vars = ['loan_purpose', 'lender_id']
 
 filename = 'trained_model.pkl'
-column_name = "columns.txt"
+column_name_file = "columns.txt"
 
 test_size = 0.3
 
@@ -61,6 +65,7 @@ test_size = 0.3
 
 datapipeline = SQLPipeline.Pipeline(param_dic)
 datapipeline.createSchemas(schemaQueries)
+datapipeline.createTables(tables, schema, data_list)
 
 
 data = datapipeline.selectData(select_query)
@@ -73,7 +78,7 @@ data_final = DataProcessing.createDummyColumns(data, cat_vars)
 
 
 
-data_final['clicked_at']=data_final['clicked_at'].astype('int')
+data_final[target_variable]=data_final[target_variable].astype('int')
 
 X_train, X_test, y_train, y_test = DataProcessing.splitTrainTest(data_final, test_size)
 
@@ -86,7 +91,7 @@ selected_columns = DataProcessing.selectFeatures(os_data_X, os_data_y)
 print(selected_columns)
 
 os_data_X= os_data_X[selected_columns]
-os_data_y= os_data_y['clicked_at']
+os_data_y= os_data_y[target_variable]
 X_train= X_train[selected_columns]
 X_test= X_test[selected_columns]
 
@@ -126,7 +131,7 @@ print(confusion_matrix)
 classification = logreg.evaluate_classification_report(y_test, predicted_classes)
 print(classification)
 
-logreg.save_columns(column_name, selected_columns)
+logreg.save_columns(column_name_file, selected_columns)
 
 
 
