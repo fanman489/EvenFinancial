@@ -25,6 +25,7 @@ class Pipeline():
 
                 for query in schema_queries:
                     cursor.execute(query)
+                    print("Executed query to create schema: " + query)
 
 
     def createTables(self, tables, schema, data_list):
@@ -34,15 +35,13 @@ class Pipeline():
             print("table and schema do not match")
             return
 
+
         for i in range(len(tables)):
-            self.cur.execute(
-                "SELECT EXISTS (SELECT 1 AS result FROM pg_tables WHERE schemaname = '" + schema[i] + "' AND tablename = '" + tables[i] + "');")
 
-
-            if not self.cur.fetchone():
-
-                data_list[i].to_sql(tables[i], engine, schema=schema[i], method=utils.psql_insert_copy)
-
+            try:
+                data_list[i].to_sql(tables[i], engine, schema=schema[i], method= utils.psql_insert_copy)
+            except ValueError as e:
+                print(e)
 
     """select data"""
     def selectData(self, query):

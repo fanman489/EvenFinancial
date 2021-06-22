@@ -28,25 +28,25 @@ offers = utils.readParquet('..\Data\ds_offers.parquet.gzip')
 
 
 # Build Query Strings:
-CREATE_CLICKS_SCHEMA = f"CREATE SCHEMA IF NOT EXISTS clicks;"
-CREATE_LEADS_SCHEMA =  f"CREATE SCHEMA IF NOT EXISTS leads;"
-CREATE_OFFERS_SCHEMA =  f"CREATE SCHEMA IF NOT EXISTS offers;"
+CREATE_CLICKS_SCHEMA = f"CREATE SCHEMA IF NOT EXISTS clicks_schema;"
+CREATE_LEADS_SCHEMA =  f"CREATE SCHEMA IF NOT EXISTS leads_schema;"
+CREATE_OFFERS_SCHEMA =  f"CREATE SCHEMA IF NOT EXISTS offers_schema;"
 schemaQueries = [CREATE_CLICKS_SCHEMA, CREATE_LEADS_SCHEMA, CREATE_OFFERS_SCHEMA]
-tables = ['clicks', 'leads', 'schema']
-schema = ['clicks', 'leads', 'schema']
+tables = ["clicks", "leads", "offers"]
+schema = ["clicks_schema", "leads_schema", "offers_schema"]
 data_list = [clicks, leads, offers]
-target_variable = 'clicked_at'
-
+target_variable = "clicked_at"
 
 
 select_query = "SELECT leads.index, leads.lead_uuid, leads.requested, leads.loan_purpose, leads.annual_income,\
 offers.offer_id, offers.apr, offers.lender_id, clicks.clicked_at \
-FROM leads.LEADS \
-LEFT JOIN offers.OFFERS \
-ON leads.LEADS.lead_uuid = offers.OFFERS.lead_uuid \
-LEFT JOIN clicks.CLICKS \
-ON offers.OFFERS.offer_id = clicks.CLICKS.offer_id \
-ORDER BY leads.lead_uuid"
+FROM leads_schema.LEADS \
+LEFT JOIN offers_schema.OFFERS \
+ON (leads_schema.LEADS.lead_uuid = offers_schema.OFFERS.lead_uuid) \
+LEFT JOIN clicks_schema.CLICKS \
+ON (offers_schema.OFFERS.offer_id = clicks_schema.CLICKS.offer_id) \
+ORDER BY lead_uuid"
+
 
 cat_vars = ['loan_purpose', 'lender_id']
 
@@ -88,7 +88,7 @@ os_data_X, os_data_y = DataProcessing.getSMOTE(X_train, y_train)
 
 selected_columns = DataProcessing.selectFeatures(os_data_X, os_data_y)
 
-print(selected_columns)
+print("selected columns:" + selected_columns)
 
 os_data_X= os_data_X[selected_columns]
 os_data_y= os_data_y[target_variable]
