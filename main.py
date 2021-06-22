@@ -5,23 +5,13 @@
 
 
 
-
-
-from sqlalchemy import create_engine
-import pandas as pd
 import utils
-
-from sklearn import preprocessing
-from sklearn.preprocessing import MinMaxScaler
 import SQLPipeline
 import DataProcessing
 import Models
 
 
 
-'non esential'
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 param_dic = {
     "host": "localhost",
@@ -79,7 +69,6 @@ data = DataProcessing.dropColumns(data)
 data = DataProcessing.updateTargetValues(data)
 data = DataProcessing.dropRows(data)
 
-print(data)
 data_final = DataProcessing.createDummyColumns(data, cat_vars)
 
 
