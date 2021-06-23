@@ -65,6 +65,7 @@ class prediction_model():
 
         model = pickle.load(open(self.filename, 'rb'))
 
+
         with open("file.txt", 'r') as f:
             self.selected_columns = [line.rstrip('\n') for line in f]
         input = self.process_datapoint(data)
@@ -76,7 +77,7 @@ class prediction_model():
         """
         y_pred = model.predict_proba(input)
 
-        return str(y_pred[0][0])
+        return "Predicted probability: " + str(y_pred[0][0])
 
 
     """Predict from a list of leads"""
@@ -99,7 +100,7 @@ class prediction_model():
                 print('Column Contents : ', columnData.values)
             """
             y_pred = model.predict_proba(input)
-            output.append(str(y_pred[0][0]))
+            output.append("Predicted probabilities: " + str(y_pred[0][0]))
 
         return ' '.join(output)
 
