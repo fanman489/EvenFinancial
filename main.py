@@ -22,9 +22,9 @@ param_dic = {
 
 
 """Directories for the parquet data"""
-clicks = utils.readParquet('..\Data\ds_clicks.parquet.gzip')
-leads = utils.readParquet('..\Data\ds_leads.parquet.gzip')
-offers = utils.readParquet('..\Data\ds_offers.parquet.gzip')
+clicks = utils.readParquet('Data/ds_clicks.parquet.gzip')
+leads = utils.readParquet('Data/ds_leads.parquet.gzip')
+offers = utils.readParquet('Data/ds_offers.parquet.gzip')
 
 
 """Queries to create schemas, and the lists to be used to create tables."""
