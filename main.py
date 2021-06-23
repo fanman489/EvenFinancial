@@ -15,9 +15,9 @@ import Models
 
 param_dic = {
     "host": "localhost",
-    "database": "postgres",
+    "database": "even",
     "user": "postgres",
-    "password": "fantheman48"
+    "password": "postgres"
 }
 
 
