@@ -27,7 +27,7 @@ class Pipeline():
 
 
     def createTables(self, tables, schema, data_list):
-        engine = sqlalchemy.create_engine('postgresql+psycopg2://postgres:' + self.parameters["password"] + '@localhost/' + self.parameters['user'])
+        engine = sqlalchemy.create_engine('postgresql+psycopg2://' + self.parameters["database"] + ':' + self.parameters["password"] + '@localhost/' + self.parameters['user'])
 
         if len(tables) != len(schema):
             print("table and schema do not match")
