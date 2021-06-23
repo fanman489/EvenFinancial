@@ -11,7 +11,7 @@ import DataProcessing
 import Models
 
 
-
+"""Input parameters for the SQL database"""
 
 param_dic = {
     "host": "localhost",
@@ -21,12 +21,13 @@ param_dic = {
 }
 
 
+"""Directories for the parquet data"""
 clicks = utils.readParquet('..\Data\ds_clicks.parquet.gzip')
 leads = utils.readParquet('..\Data\ds_leads.parquet.gzip')
 offers = utils.readParquet('..\Data\ds_offers.parquet.gzip')
 
 
-
+"""Queries to create schemas, and the lists to be used to create tables."""
 # Build Query Strings:
 CREATE_CLICKS_SCHEMA = f"CREATE SCHEMA IF NOT EXISTS clicks_schema;"
 CREATE_LEADS_SCHEMA =  f"CREATE SCHEMA IF NOT EXISTS leads_schema;"
@@ -36,8 +37,11 @@ tables = ["clicks", "leads", "offers"]
 schema = ["clicks_schema", "leads_schema", "offers_schema"]
 data_list = [clicks, leads, offers]
 target_variable = "clicked_at"
+cat_vars = ['loan_purpose', 'lender_id']
 
 
+
+"""Select query to combine the three tables into one."""
 select_query = "SELECT leads.index, leads.lead_uuid, leads.requested, leads.loan_purpose, leads.annual_income,\
 offers.offer_id, offers.apr, offers.lender_id, clicks.clicked_at \
 FROM leads_schema.LEADS \
@@ -48,26 +52,19 @@ ON (offers_schema.OFFERS.offer_id = clicks_schema.CLICKS.offer_id) \
 ORDER BY lead_uuid"
 
 
-cat_vars = ['loan_purpose', 'lender_id']
-
+"""File names to save trained model and the selected columns."""
 filename = 'trained_model.pkl'
 column_name_file = "columns.txt"
-
 test_size = 0.3
 
 
-
-
-#data['requested'] = MinMaxScaler().fit_transform(data[['requested']])
-#data['annual_income'] = MinMaxScaler().fit_transform(data[['annual_income']])
-
-
-
+"""This section creates the data pipeline, create schemas, tables."""
 datapipeline = SQLPipeline.Pipeline(param_dic)
 datapipeline.createSchemas(schemaQueries)
 datapipeline.createTables(tables, schema, data_list)
 
 
+"""Select the features """
 data = datapipeline.selectData(select_query)
 
 data = DataProcessing.dropColumns(data)
@@ -88,7 +85,6 @@ os_data_X, os_data_y = DataProcessing.getSMOTE(X_train, y_train)
 
 selected_columns = DataProcessing.selectFeatures(os_data_X, os_data_y)
 
-print("selected columns:" + selected_columns)
 
 os_data_X= os_data_X[selected_columns]
 os_data_y= os_data_y[target_variable]
@@ -98,10 +94,11 @@ X_test= X_test[selected_columns]
 
 print(os_data_X, os_data_y)
 
+"""
 import statsmodels.api as sm
 logit_model=sm.Logit(os_data_y,os_data_X)
 result=logit_model.fit()
-
+"""
 
 
 
@@ -113,6 +110,8 @@ logreg = Models.prediction_model()
 logreg.fit(os_data_X, os_data_y.ravel())
 predicted_classes = logreg.predict(X_test)
 
+
+"""Evaluate model accuracy"""
 
 print(logreg.evaluate_accuracy(y_test, predicted_classes))
 

@@ -2,9 +2,7 @@
 import utils
 import pandas as pd
 import sqlalchemy
-import psycopg2
-from io import StringIO
-import csv
+
 
 
 class Pipeline():
