@@ -1,4 +1,4 @@
-# EvenFinancia
+# PredictClick
 
 Main.py: Script for data pipeline and model training and evaluation. 
 
