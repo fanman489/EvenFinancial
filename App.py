@@ -17,7 +17,7 @@ def predict_multiple():
 
     if type(request_data) != list:
 
-        return "data needs to be a list of dictionary"
+        return "data needs to be a list of dictionaries"
 
     output = model.predict_JSON_multiple(request_data)
 
