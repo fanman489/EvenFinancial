@@ -127,5 +127,9 @@ class prediction_model():
         if lender in self.selected_columns:
             input[lender] = 1
 
+        credit = 'credit' + '_' + data_point['credit']
+        if credit in self.selected_columns:
+            input[credit] = 1
+
         return input
 

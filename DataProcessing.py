@@ -45,6 +45,7 @@ def splitTrainTest(data, test_size):
     y = data.loc[:, data.columns == 'clicked_at']
     return train_test_split(X, y, test_size=test_size, random_state=0)
 
+
 def getSMOTE(X_train, y_train):
     os = SMOTE(random_state=0)
 
@@ -66,7 +67,7 @@ def getSMOTE(X_train, y_train):
     return os_data_X, os_data_y
 
 
-
+"""Perform RFE to select features"""
 def selectFeatures(os_data_X, os_data_y):
     data_final_vars = os_data_X.columns.values.tolist()
     y_columns = ['clicked_at']
@@ -74,7 +75,7 @@ def selectFeatures(os_data_X, os_data_y):
 
 
     logreg = LogisticRegression()
-    rfe = RFE(logreg, n_features_to_select=20)
+    rfe = RFE(logreg, n_features_to_select=30)
     rfe = rfe.fit(os_data_X, os_data_y.values.ravel())
     print(X_columns)
     print(rfe.support_)

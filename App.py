@@ -8,9 +8,8 @@ app.config["DEBUG"] = True
 model = Models.prediction_model()
 model.load_model("trained_model.pkl")
 
-# Create some test data for our catalog in the form of a list of dictionaries.
 
-
+"""This function accepts Post requests in the form of a list of dictionaries."""
 @app.route('/read-json-multiple', methods=['POST'])
 def predict_multiple():
     request_data = request.get_json()
@@ -23,7 +22,7 @@ def predict_multiple():
 
     return output
 
-
+"""This function accepts Post requests in the form of a list of dictionaries."""
 @app.route('/read-json-single', methods=['POST'])
 def predict_single():
     request_data = request.get_json()
