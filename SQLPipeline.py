@@ -13,9 +13,9 @@ class Pipeline():
 
 
 
+
     """Creates the schemas in the SQL database from a list of queries"""
     def createSchemas(self, schema_queries):
-
 
         # Create Schema and Tables:
         with self.conn:

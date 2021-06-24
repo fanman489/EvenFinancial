@@ -24,8 +24,15 @@ def connect(params_dic):
         conn = psycopg2.connect(**params_dic)
 
     except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
-        exit(1)
+        conn = psycopg2.connect(user = params_dic["user"], password = params_dic["password"], host = params_dic["host"])
+        conn.autocommit = True
+        try:
+            query = "create database " + params_dic["database"]
+            cur = conn.cursor()
+            cur.execute(query)
+        except ValueError as e:
+            print(e)
+            exit(1)
 
     print("Connection successful"
           )
