@@ -64,33 +64,30 @@ datapipeline.createSchemas(schemaQueries)
 datapipeline.createTables(tables, schema, data_list)
 
 
-"""Select the features """
+"""Create combined table and drop unneeded columns and rows """
 data = datapipeline.selectData(select_query)
-
 data = DataProcessing.dropColumns(data)
 data = DataProcessing.updateTargetValues(data)
 data = DataProcessing.dropRows(data)
 
+
+"""Create dummy features for categorical data"""
 data_final = DataProcessing.createDummyColumns(data, cat_vars)
-
-
-
 data_final[target_variable]=data_final[target_variable].astype('int')
 
+"""Get training, testing split"""
 X_train, X_test, y_train, y_test = DataProcessing.splitTrainTest(data_final, test_size)
 
 
 """SMOTE"""
 os_data_X, os_data_y = DataProcessing.getSMOTE(X_train, y_train)
 
+"""RFE"""
 selected_columns = DataProcessing.selectFeatures(os_data_X, os_data_y)
-
-
 os_data_X= os_data_X[selected_columns]
 os_data_y= os_data_y[target_variable]
 X_train= X_train[selected_columns]
 X_test= X_test[selected_columns]
-
 
 
 """
@@ -99,10 +96,8 @@ logit_model=sm.Logit(os_data_y,os_data_X)
 result=logit_model.fit()
 """
 
-
+"""Create model and fit"""
 logreg = Models.prediction_model()
-
-
 logreg.fit(os_data_X, os_data_y.ravel())
 predicted_classes = logreg.predict(X_test)
 
@@ -110,13 +105,10 @@ predicted_classes = logreg.predict(X_test)
 """Evaluate model accuracy"""
 
 print(logreg.evaluate_accuracy(y_test, predicted_classes))
-
 parameters = logreg.getparameters()
-
 logreg.saveModel(filename)
 
 y_pred = logreg.predict_proba(X_test)
-
 
 confusion_matrix = logreg.evaluate_confusion_matrix(y_test, predicted_classes)
 print(confusion_matrix)
@@ -125,10 +117,6 @@ classification = logreg.evaluate_classification_report(y_test, predicted_classes
 print(classification)
 
 logreg.save_columns(column_name_file, selected_columns)
-
-
-
-"""Baseline model"""
 
 
 
